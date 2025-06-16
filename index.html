@@ -47,27 +47,31 @@
 
             mensagem.textContent = 'Buscando...';
 
-            fetch(`https://dadosabertos.camara.leg.br/api/v2/deputados?nome=${encodeURIComponent(nome)}&ordem=ASC&ordenarPor=nome`)
-            .then(resposta => resposta.json()) // parse para JSON
-            .then(resultado => {
-                const deputado = resultado.dados[0];;
-                if (deputado) {
-                    imagem.src = deputado.urlFoto;
-                    dados.textContent = deputado.nome;
-                    partido.textContent = deputado.siglaPartido
-                    uf.textContent = deputado.siglaUf;
-                    mensagem.textContent = '';
-                } else {
-                    imagem.src = '';
-                    dados.textContent = 'Nenhum deputado encontrado com esse nome.';
-                    mensagem.textContent = '';
-                }
-            })
-            .catch(erro => {
-                console.error('Erro ao buscar dados:', erro);
-                mensagem.textContent = 'Erro ao buscar dados.';
+            const requisicao = new Request(`https://dadosabertos.camara.leg.br/api/v2/deputados?nome=${encodeURIComponent(nome)}&ordem=ASC&ordenarPor=nome`, {
+                method: 'GET'
             });
-        });
+
+            fetch(requisicao)
+                .then(resposta => resposta.json()) // parse para JSON
+                .then(resultado => {
+                    const deputado = resultado.dados[0];;
+                    if (deputado) {
+                        imagem.src = deputado.urlFoto;
+                        dados.textContent = deputado.nome;
+                        partido.textContent = deputado.siglaPartido
+                        uf.textContent = deputado.siglaUf;
+                        mensagem.textContent = '';
+                    } else {
+                        imagem.src = '';
+                        dados.textContent = 'Nenhum deputado encontrado com esse nome.';
+                        mensagem.textContent = '';
+                    }
+                })
+                .catch(erro => {
+                    console.error('Erro ao buscar dados:', erro);
+                    mensagem.textContent = 'Erro ao buscar dados.';
+                });
+            });
     </script>
 </body>
 </html>
